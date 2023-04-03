@@ -14,7 +14,8 @@ function App() {
     const [userAvatar, setUserAvatar] = useState()
     const [cards, setCards] = useState([])
 
-    useEffect(()=>{
+   const useef = useEffect(()=>{
+    console.log(useef)
         api.getAllCardWhithUser()
         .then(([cards, user])=>{
             setUserName(user.name)
@@ -24,10 +25,12 @@ function App() {
         })
     },[])
    
+   
     useEffect(() => {
         function handleEscClose(evt) {
             if (evt.key === 'Escape') closeAllPopups()
         }
+        
         document.addEventListener('keydown', handleEscClose)
         return () => {
             document.removeEventListener('keydown', handleEscClose)
@@ -61,7 +64,6 @@ function App() {
         if (isEditProfilePopupOpen) setIsEditProfilePopupOpen(false)
         if (isAddPlacePopupOpen) setIsAddPlacePopupOpen(false)
         if (isEditAvatarPopupOpen) setIsEditAvatarPopupOpen(false)
-        if (isImagePopupOpen) setIsImagePopupOpen(false)
     }
 
     return (
@@ -107,7 +109,7 @@ function App() {
                 <ImagePopup
                     card={selectedCard}
                     isOpen={isImagePopupOpen}
-                    onClose ={closeAllPopups}/>
+                    onClose ={setIsImagePopupOpen}/>
                 <PopupWithForm
                     name='delete-card'
                     title='Вы уверены?'

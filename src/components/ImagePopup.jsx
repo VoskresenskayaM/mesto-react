@@ -6,9 +6,9 @@ function ImagePopup(props) {
 
     return (
         <div className={popupClass}
-            onClick={props.onClose}>
+            onClick={()=>props.onClose(false)}>
             <div className="card-popup">
-                <button className="popup__close-button" type="button" aria-label="закрыть"  ></button>
+                <button className="popup__close-button" type="button" aria-label="закрыть"></button>
                 <figure className="card-popup">
                     <img className="card-popup__image" src={props.card.link} alt={props.card.name} onClick={(e => e.stopPropagation())} />
                     <figcaption>
