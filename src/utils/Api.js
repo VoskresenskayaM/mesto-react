@@ -1,4 +1,4 @@
-/*export default*/ class Api {
+class Api {
     constructor(bathPath, token) {
         this._basePath = bathPath;
         this._token = token;
@@ -93,6 +93,6 @@
 const api = new Api('https://mesto.nomoreparties.co/v1/cohort-61',
     '895e832b-1163-4e0c-87e7-99d6139284c1');
 
-    export default api;
+export default api;
 
 
