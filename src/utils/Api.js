@@ -67,18 +67,22 @@ class Api {
         });
     }
 
-    likeCard(id) {
+    _likeCard(id) {
         return this._request(`${this._basePath}/cards/${id}/likes`, {
             method: "PUT",
             headers: this._getHeaders(),
         });
     }
 
-    deleteLike(id) {
+    _deleteLike(id) {
         return this._request(`${this._basePath}/cards/${id}/likes`, {
             method: "DELETE",
             headers: this._getHeaders(),
         });
+    }
+
+    changeLikeCardStatus(id, isLiked) {
+        return isLiked ? this._deleteLike(id) : this._likeCard(id)
     }
 
     editAvatar({ item }) {

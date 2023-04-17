@@ -3,29 +3,26 @@ import editFotoProfile from '../images/editFotoProfile.svg'
 import Card from './Card'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import api from '../utils/Api'
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
+import { useContext } from 'react'
 
 function Main(props) {
+
+    const currentUser = useContext(CurrentUserContext);
 
     const [userName, setUserName] = useState('')
     const [userDescription, setUserDescription] = useState('')
     const [userAvatar, setUserAvatar] = useState('')
-    const [cards, setCards] = useState([])
 
-    const useef = useEffect(() => {
-        console.log(useef)
-        api.getAllCardWhithUser()
-            .then(([cards, user]) => {
-                setUserName(user.name)
-                setUserDescription(user.about)
-                setUserAvatar(user.avatar)
-                setCards(cards)
-                console.log(cards)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }, [])
+        useEffect(() => {
+
+       if (currentUser) {
+            setUserName(currentUser.name)
+            setUserDescription(currentUser.about)
+            setUserAvatar(currentUser.avatar)
+        }
+
+    }, [currentUser])
 
     return (
         <main className="page__content">
@@ -49,10 +46,12 @@ function Main(props) {
             </section>
             <section className="gallery" aria-label="галлерея">
                 <ul className="gallery__cards">
-                    {cards.map((card) => (
+                    {props.cards.map((card) => (
                         <Card key={card._id}
                             card={card}
-                            onCardClick={props.onCardClick} />
+                            onCardClick={props.onCardClick}
+                            deleteCardClick={props.onCardDelete}
+                            onCardLike={props.onCardLike} />
                     ))}
                 </ul>
             </section>
