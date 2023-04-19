@@ -1,9 +1,9 @@
 import React from "react";
-function SubmitButton(props) {
-   
-   const buttonClassName = `form__button ${props.isFormValid ? 'form__button_inactive' : ''}`
+function SubmitButton({ isFormValid, buttonText }) {
+
+    const buttonClassName = `form__button ${isFormValid ? 'form__button_inactive' : ''}`
     return (
-        <button  className={buttonClassName} type="submit" disabled={props.isFormValid}>{props.buttonText}</button>
+        <button className={buttonClassName} type="submit" disabled={isFormValid}>{buttonText}</button>
     )
 }
 

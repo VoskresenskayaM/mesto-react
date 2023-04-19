@@ -1,58 +1,46 @@
 import React from "react"
 import editFotoProfile from '../images/editFotoProfile.svg'
 import Card from './Card'
-import { useState } from 'react';
-import { useEffect } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
 import { useContext } from 'react'
 
-function Main(props) {
+function Main({ onEditAvatar, onEditProfile, onAddPlace, cards, onCardClick, onCardDelete, onCardLike }) {
 
     const currentUser = useContext(CurrentUserContext);
 
-    const [userName, setUserName] = useState('')
-    const [userDescription, setUserDescription] = useState('')
-    const [userAvatar, setUserAvatar] = useState('')
-
-        useEffect(() => {
-
-       if (currentUser) {
-            setUserName(currentUser.name)
-            setUserDescription(currentUser.about)
-            setUserAvatar(currentUser.avatar)
-        }
-
-    }, [currentUser])
+    const cardsElements = cards.map((card) => (
+        <li key={card._id}>
+            <Card
+                card={card}
+                onCardClick={onCardClick}
+                deleteCardClick={onCardDelete}
+                onCardLike={onCardLike} />
+        </li>
+    ))
 
     return (
         <main className="page__content">
             <section className="profile">
                 <div className="profile__image-block">
                     <div className="profile-image-contener">
-                        <img className="profile__image" src={userAvatar} alt="фото профиля" />
-                        <div className="profile__image-overley" onClick={props.onEditAvatar}>
+                        <img className="profile__image" src={currentUser.avatar} alt="фото профиля" />
+                        <div className="profile__image-overley" onClick={onEditAvatar}>
                             <img className="profile__edit-image" src={editFotoProfile} alt="изменение профиля" />
                         </div>
                     </div>
                     <div className="profile__title-block">
-                        <h1 className="profile__title">{userName}</h1>
-                        <p className="profile__subtitle">{userDescription}</p>
+                        <h1 className="profile__title">{currentUser.name}</h1>
+                        <p className="profile__subtitle">{currentUser.about}</p>
                     </div>
                     <button className="profile__edit" type="button" aria-label="изменить"
-                        onClick={props.onEditProfile}></button>
+                        onClick={onEditProfile}></button>
                 </div>
                 <button className="profile__add-plus" type="button" aria-label="добавить"
-                    onClick={props.onAddPlace}></button>
+                    onClick={onAddPlace}></button>
             </section>
             <section className="gallery" aria-label="галлерея">
                 <ul className="gallery__cards">
-                    {props.cards.map((card) => (
-                        <Card key={card._id}
-                            card={card}
-                            onCardClick={props.onCardClick}
-                            deleteCardClick={props.onCardDelete}
-                            onCardLike={props.onCardLike} />
-                    ))}
+                    {cardsElements}
                 </ul>
             </section>
         </main>

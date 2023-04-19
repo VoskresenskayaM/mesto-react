@@ -2,16 +2,15 @@ import React from "react";
 import SubmitButton from "./SubmitButton";
 
 
-function Form(props) {
+function Form({ title, name, buttonText, isFormValid, children, onSubmit }) {
 
     return (
-        <form className="form" name={props.name} onSubmit={props.onSubmit} >
-            <h3 className="form__title">{props.title}</h3>
-            {props.children}
-            <SubmitButton 
-            buttonText={props.buttonText}
-            isFormValid={props.isFormValid}
-           />
+        <form className="form" name={name} onSubmit={onSubmit} >
+            <h3 className="form__title">{title}</h3>
+            {children}
+            <SubmitButton
+                buttonText={buttonText}
+                isFormValid={isFormValid} />
         </form>
     )
 }

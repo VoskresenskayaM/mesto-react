@@ -2,57 +2,40 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import PopupWithForm from './PopupWithForm'
 
-function AddPlacePopup(props) {
+function AddPlacePopup({ isOpen, isLoading, onAddNewCard, onClose }) {
 
-    const [name, setName] = useState('')
-    const [link, setLink] = useState('')
-    const [nameDirty, setNameDirty] = useState(false)
-    const [linkDirty, setLinkDirty] = useState(false)
-    const [nameError, setNameError] = useState('Это поле не может быть пустым')
-    const [linkError, setLinkError] = useState('Это поле не может быть пустым')
-    const [formValid, setFormValid] = useState(true)
-    const [buttonText, setButtonText] = useState('Создать')
-
+    const [name, setName] = useState('');
+    const [link, setLink] = useState('');
+    const [nameDirty, setNameDirty] = useState(false);
+    const [linkDirty, setLinkDirty] = useState(false);
+    const [nameError, setNameError] = useState('Это поле не может быть пустым');
+    const [linkError, setLinkError] = useState('Это поле не может быть пустым');
+    const formValid = nameError || linkError || name === '' || link === '';
 
     useEffect(() => {
-        if (nameError || linkError || name === '' || link === '') setFormValid(true)
-        else setFormValid(false)
-
-    }, [nameError, linkError])
-
-    useEffect(() => {
-        if (!props.isOpen) {
+        if (!isOpen) {
             setName('')
             setLink('')
             setNameError('Это поле не может быть пустым')
             setLinkError('Это поле не может быть пустым')
             setLinkDirty(false)
             setNameDirty(false)
-            setFormValid(true)
         }
-    }, [props.isOpen])
+    }, [isOpen])
 
-    useEffect(() => {
-        if (props.isLoading) setButtonText('Сохранение')
-        else setButtonText('Создать')
-    }, [props.isLoading])
-
-
-    const nameHandler = (e) => {
+    const checkNameHandler = (e) => {
         setName(e.target.value)
-        if (e.target.value.length < 2 || e.target.value.length > 30)
-            setNameError('Название должно быть от 2 до 30 символов')
+        if (!e.target.validity.valid) setNameError('Название должно быть от 2 до 30 символов')
         else setNameError('')
     }
 
-    const linkHandler = (e) => {
+    const checkLinkHandler = (e) => {
         setLink(e.target.value)
-        const reg = /https?:\/\/\S+/
-        if (!reg.test(e.target.value)) setLinkError('Тут должна быть ссылка')
+        if (!e.target.validity.valid) setLinkError('Тут должна быть ссылка')
         else setLinkError('')
     }
 
-    const blurHandler = (e) => {
+    const setBlurHandler = (e) => {
         switch (e.target.name) {
             case 'name':
                 setNameDirty(true)
@@ -63,12 +46,15 @@ function AddPlacePopup(props) {
         }
     }
 
-    const nameSpanClassName = `form__input-error place-input-error ${nameDirty && nameError ? 'form__input-error_active' : ''}`
-    const linkSpanClassName = `form__input-error link-input-error  ${linkDirty && linkError ? 'form__input-error_active' : ''}`
+    const nameSpanClassName = `form__input-error place-input-error 
+    ${nameDirty && nameError ? 'form__input-error_active' : ''}`
+
+    const linkSpanClassName = `form__input-error link-input-error  
+    ${linkDirty && linkError ? 'form__input-error_active' : ''}`
 
     function handleSubmit(e) {
         e.preventDefault();
-        props.onAddNewCard({
+        onAddNewCard({
             name: name,
             link: link,
         })
@@ -79,17 +65,17 @@ function AddPlacePopup(props) {
             onSubmit={handleSubmit}
             name='new-card'
             title='Новое место'
-            buttonText={buttonText}
-            isOpen={props.isOpen}
-            onClose={props.onClose}
+            buttonText={isLoading ? 'Сохранение' : 'Создать'}
+            isOpen={isOpen}
+            onClose={onClose}
             isFormValid={formValid}>
             <input id="place-input" className="form__input  form__input_theme_place" type="text" name="name"
-                placeholder="Название"
-                value={name} onBlur={e => blurHandler(e)} onChange={e => nameHandler(e)} />
+                placeholder="Название" required minLength="2" maxLength="40"
+                value={name} onBlur={e => setBlurHandler(e)} onChange={e => checkNameHandler(e)} />
             <span className={nameSpanClassName}>{nameError}</span>
             <input id="link-input" className="form__input  form__input_theme_link" name="link"
-                placeholder="Ссылка на картинку"
-                value={link} onBlur={e => blurHandler(e)} onChange={e => linkHandler(e)} />
+                placeholder="Ссылка на картинку" required type="url"
+                value={link} onBlur={e => setBlurHandler(e)} onChange={e => checkLinkHandler(e)} />
             <span className={linkSpanClassName}>{linkError}</span>
         </PopupWithForm>
     )

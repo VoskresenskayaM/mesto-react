@@ -20,37 +20,18 @@ function App() {
     const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false)
     const [selectedCard, setSelectedCard] = useState({})
     const [cards, setCards] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
-    const [changeCards, setIsChangeCards] = useState(false)
 
     useEffect(() => {
         api.getCards()
-        .then((res) => {
-            setCards(res)
-        })
-        .catch((err) => {
-            console.log(err)
-        })
-    }, [changeCards])
+            .then((res) => {
+                setCards(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }, [])
 
-    const isOpen = isEditAvatarPopupOpen ||
-    isEditProfilePopupOpen ||
-    isAddPlacePopupOpen ||
-    selectedCard.link
-
-    useEffect(() => {
-        function handleEscClose(evt) {
-            if (evt.key === 'Escape') closeAllPopups()
-        }
-        if (isOpen) {
-            document.addEventListener('keydown', handleEscClose)
-            return () => {
-                document.removeEventListener('keydown', handleEscClose)
-            }
-        }
-    }, [isOpen])
-
-    const [currentUser, setCurrentUser] = useState({ name: '', about: '' })
+    const [currentUser, setCurrentUser] = useState({ name: '', about: '', avatar: '' })
 
     useEffect(() => {
         api.getUserInfo()
@@ -92,18 +73,22 @@ function App() {
         if (isDeletePopupOpen) setIsDeletePopupOpen(false)
     }
 
+    const [isLoadingDeleteCard, setIsLoadingDeleteCard] = useState(false)
+    const [isLoadingAddNewCard, setIsLoadingAddNewCard] = useState(false)
+    const [isLoadingUpdateUser, setIsLoadingUpdateUser] = useState(false)
+    const [isLoadingUpdateAvatar, setIsLoadingUpdateAvatar] = useState(false)
+
     function handleDeleteCard() {
-        setIsLoading(true)
+        setIsLoadingDeleteCard(true)
         api.deleteCard(selectedCard._id)
             .then(() => {
-                setCards(cards => cards.filter(c => c.id !== selectedCard._id))
-                setIsChangeCards(!changeCards)
+                setCards(cards => cards.filter(c => c._id !== selectedCard._id))
+                closeAllPopups()
             })
             .catch((err) =>
                 console.log(err))
             .finally(() => {
-                closeAllPopups()
-                setIsLoading(false)
+                setIsLoadingDeleteCard(false)
             })
     }
 
@@ -112,52 +97,50 @@ function App() {
         api.changeLikeCardStatus(card._id, isLiked)
             .then((newCard) => {
                 setCards(cards => cards.map(c => c._id === card._id ? newCard : c))
-                setIsChangeCards(!changeCards)
             })
             .catch((err) => console.log(err))
     }
 
     function handleAddNewCard(card) {
-        setIsLoading(true)
+        setIsLoadingAddNewCard(true)
         api.addNewCard({ item: card })
             .then((newCard) => {
-               setCards([...cards, newCard])
-               setIsChangeCards(!changeCards)
+                setCards([newCard, ...cards])
+                closeAllPopups()
             })
             .catch((err) => console.log(err))
             .finally(() => {
-                closeAllPopups()
-                setIsLoading(false)
+                setIsLoadingAddNewCard(false)
             })
     }
 
     function handleUpdateUser(user) {
-        setIsLoading(true)
+        setIsLoadingUpdateUser(true)
         api.editUserInfo({ item: user })
             .then((newUser) => {
                 setCurrentUser(newUser)
+                closeAllPopups()
             })
             .catch((err) => {
                 console.log(err)
             })
             .finally(() => {
-                closeAllPopups()
-                setIsLoading(false)
+                setIsLoadingUpdateUser(false)
             })
     }
 
     function handleUpdateAvatar(userAvatarLink) {
-        setIsLoading(true)
+        setIsLoadingUpdateAvatar(true)
         api.editAvatar({ item: userAvatarLink })
             .then((newAvatar) => {
                 setCurrentUser(newAvatar)
+                closeAllPopups()
             })
             .catch((err) => {
                 console.log(err)
             })
             .finally(() => {
-                closeAllPopups()
-                setIsLoading(false)
+                setIsLoadingUpdateAvatar(false)
             })
     }
 
@@ -180,13 +163,13 @@ function App() {
                         isOpen={isEditProfilePopupOpen}
                         onClose={closeAllPopups}
                         onUpdateUser={handleUpdateUser}
-                        isLoading={isLoading}>
+                        isLoading={isLoadingUpdateUser}>
                     </EditProfilePopup>
                     <AddPlacePopup
                         isOpen={isAddPlacePopupOpen}
                         onClose={closeAllPopups}
                         onAddNewCard={handleAddNewCard}
-                        isLoading={isLoading}>
+                        isLoading={isLoadingAddNewCard}>
                     </AddPlacePopup>
                     <ImagePopup
                         card={selectedCard}
@@ -196,13 +179,13 @@ function App() {
                         isOpen={isDeletePopupOpen}
                         onClose={setIsDeletePopupOpen}
                         onDeleteCard={handleDeleteCard}
-                        isLoading={isLoading}>
+                        isLoading={isLoadingDeleteCard}>
                     </DeleteCardPopup>
                     <EditAvatarPopup
                         isOpen={isEditAvatarPopupOpen}
                         onClose={closeAllPopups}
                         onUpdateAvatar={handleUpdateAvatar}
-                        isLoading={isLoading}>
+                        isLoading={isLoadingUpdateAvatar}>
                     </EditAvatarPopup>
                 </div>
             </CurrentUserContext.Provider>
