@@ -10,15 +10,15 @@ function EditProfilePopup({ isOpen, isLoading, onUpdateUser, onClose }) {
     const [description, setDescription] = useState('')
     const [nameDirty, setNameDirty] = useState(false)
     const [descriptionDirty, setDescriptionDirty] = useState(false)
-    const [nameError, setNameError] = useState('Измените имя')
-    const [descriptionError, setDescriptionError] = useState('Измените род деятельности')
+    const [nameError, setNameError] = useState('')
+    const [descriptionError, setDescriptionError] = useState('')
 
     const formValid = nameError || descriptionError;
 
     useEffect(() => {
         if (!isOpen) {
-            setNameError('Измените имя')
-            setDescriptionError('Измените род деятельности')
+            setNameError('')
+            setDescriptionError('')
             setDescriptionDirty(false)
             setNameDirty(false)
             setName(currentUser.name);
@@ -26,17 +26,17 @@ function EditProfilePopup({ isOpen, isLoading, onUpdateUser, onClose }) {
         }
     }, [currentUser, isOpen])
 
-    const checkNameHandler = (e) => {
+    const handleNameChange = (e) => {
         setName(e.target.value)
         if (!e.target.validity.valid)
-            setNameError('Имя должно быть от 2 до 40 символов')
+            setNameError(e.target.validationMessage)
         else setNameError('')
     }
 
-    const checkDescriptionHandler = (e) => {
+    const handleDescriptionChange = (e) => {
         setDescription(e.target.value)
         if (!e.target.validity.valid)
-            setDescriptionError('Занятие должно быть от 2 до 200 символов')
+            setDescriptionError(e.target.validationMessage)
         else setDescriptionError('')
     }
 
@@ -75,11 +75,11 @@ function EditProfilePopup({ isOpen, isLoading, onUpdateUser, onClose }) {
             isFormValid={formValid}>
             <input id="name-input" className="form__input  form__input_theme_name" type="text" name="name"
                 placeholder="Имя" required minLength="2" maxLength="40"
-                value={name} onBlur={e => setBlurHandler(e)} onChange={e => checkNameHandler(e)} />
+                value={name} onBlur={e => setBlurHandler(e)} onChange={e => handleNameChange(e)} />
             <span className={nameSpanClassName}>{nameError}</span>
             <input id="profession-input" className="form__input  form__input_theme_profession" type="text" name="about"
                 placeholder="Профессия" required minLength="2" maxLength="200"
-                value={description} onBlur={e => setBlurHandler(e)} onChange={e => checkDescriptionHandler(e)} />
+                value={description} onBlur={e => setBlurHandler(e)} onChange={e => handleDescriptionChange(e)} />
             <span className={aboutSpanClassName}>{descriptionError}</span>
         </PopupWithForm>
     )

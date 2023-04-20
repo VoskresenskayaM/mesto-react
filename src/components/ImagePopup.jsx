@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 function ImagePopup({ isOpen, onClose, card }) {
 
     const popupClass = `popup popup_type_image ${isOpen ? 'popup_opened' : ''}`;
 
-    function handleEscClose(evt) {
-        if (evt.key === 'Escape') onClose()
-    }
+    useEffect(() => {
+        function handleEscClose(evt) {
+            if (evt.key === 'Escape') onClose()
+        }
 
-    isOpen ? document.addEventListener('keydown', handleEscClose) :
-        document.removeEventListener('keydown', handleEscClose)
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscClose)
+            return () => document.removeEventListener('keydown', handleEscClose)
+        }
+    }, [isOpen])
 
     return (
         <div className={popupClass} onClick={() => onClose()}>

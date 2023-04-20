@@ -21,9 +21,9 @@ function EditAvatarPopup({ isOpen, isLoading, onUpdateAvatar, onClose }) {
         setLinkDirty(true)
     }
 
-    const checkLinkHandler = (e) => {
+    const handleLinkChange = (e) => {
         setLink(e.target.value)
-        if (!e.target.validity.valid) setLinkError('Тут должна быть ссылка')
+        if (!e.target.validity.valid) setLinkError(e.target.validationMessage)
         else setLinkError('')
     }
 
@@ -48,7 +48,7 @@ function EditAvatarPopup({ isOpen, isLoading, onUpdateAvatar, onClose }) {
             isFormValid={formValid}>
             <input id="avatar-input" className="form__input  form__input_theme_avatar" name="link"
                 placeholder="Ссылка на картинку" required type="url"
-                value={link} onBlur={e => setBlurHandler(e)} onChange={e => checkLinkHandler(e)} />
+                value={link} onBlur={e => setBlurHandler(e)} onChange={e => handleLinkChange(e)} />
             <span className={linkSpanClassName}>{linkError}</span>
         </PopupWithForm>
     )

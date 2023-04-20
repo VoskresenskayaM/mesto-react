@@ -23,15 +23,15 @@ function AddPlacePopup({ isOpen, isLoading, onAddNewCard, onClose }) {
         }
     }, [isOpen])
 
-    const checkNameHandler = (e) => {
+    const handleNameChange = (e) => {
         setName(e.target.value)
-        if (!e.target.validity.valid) setNameError('Название должно быть от 2 до 30 символов')
+        if (!e.target.validity.valid) setNameError(e.target.validationMessage)
         else setNameError('')
     }
 
-    const checkLinkHandler = (e) => {
+    const handleLinkChange = (e) => {
         setLink(e.target.value)
-        if (!e.target.validity.valid) setLinkError('Тут должна быть ссылка')
+        if (!e.target.validity.valid) setLinkError(e.target.validationMessage)
         else setLinkError('')
     }
 
@@ -71,11 +71,11 @@ function AddPlacePopup({ isOpen, isLoading, onAddNewCard, onClose }) {
             isFormValid={formValid}>
             <input id="place-input" className="form__input  form__input_theme_place" type="text" name="name"
                 placeholder="Название" required minLength="2" maxLength="40"
-                value={name} onBlur={e => setBlurHandler(e)} onChange={e => checkNameHandler(e)} />
+                value={name} onBlur={e => setBlurHandler(e)} onChange={e => handleNameChange(e)} />
             <span className={nameSpanClassName}>{nameError}</span>
             <input id="link-input" className="form__input  form__input_theme_link" name="link"
                 placeholder="Ссылка на картинку" required type="url"
-                value={link} onBlur={e => setBlurHandler(e)} onChange={e => checkLinkHandler(e)} />
+                value={link} onBlur={e => setBlurHandler(e)} onChange={e => handleLinkChange(e)} />
             <span className={linkSpanClassName}>{linkError}</span>
         </PopupWithForm>
     )

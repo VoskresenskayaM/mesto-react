@@ -22,9 +22,11 @@ function App() {
     const [cards, setCards] = useState([])
 
     useEffect(() => {
-        api.getCards()
-            .then((res) => {
-                setCards(res)
+
+        api.getAllCardWhithUser()
+            .then(([cards, user]) => {
+                setCards(cards)
+                setCurrentUser(user)
             })
             .catch((err) => {
                 console.log(err)
@@ -32,16 +34,6 @@ function App() {
     }, [])
 
     const [currentUser, setCurrentUser] = useState({ name: '', about: '', avatar: '' })
-
-    useEffect(() => {
-        api.getUserInfo()
-            .then((user) => {
-                setCurrentUser(user)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }, [])
 
     function handleEditAvatarClick() {
         setIsEditAvatarPopupOpen(true)
